@@ -1,11 +1,12 @@
 <template>
   <router-view/>
+  <!-- 底部导航-->
   <div id="nav">
     <router-link class="tab-bar-item" to="/">
       <div class="icon"><i class="iconfont icon-yemian-copy-copy"></i></div>
       <div>首页</div>
     </router-link>
-    <router-link class="tab-bar-item" to="/categroy">
+    <router-link class="tab-bar-item" to="/category">
       <div class="icon"><i class="iconfont icon-fenlei"></i></div>
       <div>分类</div>
     </router-link>

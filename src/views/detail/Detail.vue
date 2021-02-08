@@ -1,15 +1,17 @@
 <template>
   <div>
-    <h1>商品详情</h1>
+    <nav-bar>
+      <template v-slot:default>商品详情</template>
+    </nav-bar>
   </div>
 </template>
 <script>
+import NavBar from "@/components/common/navbar/NavBar"; // 1-1 引入顶部导航组件
 export default {
   name: "Detail",
-  data() {
-    return {}
-  },
-  methods: {}
+  components: {
+    NavBar // 1-2 注册组件
+  }
 }
 </script>
 

@@ -1,15 +1,14 @@
 <template>
   <div>
-    <!-- 1-3 引入组件-->
     <nav-bar>
-      <template v-slot:default>图书兄弟</template>
+      <template v-slot:default>商品分类</template>
     </nav-bar>
   </div>
 </template>
 <script>
 import NavBar from "@/components/common/navbar/NavBar"; // 1-1 引入顶部导航组件
 export default {
-  name: "Home",
+  name: "Category",
   components: {
     NavBar // 1-2 注册组件
   }

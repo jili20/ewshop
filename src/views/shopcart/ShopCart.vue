@@ -1,15 +1,17 @@
 <template>
  <div>
-   <h1>购物车</h1>
+   <nav-bar>
+     <template v-slot:default>购物车</template>
+   </nav-bar>
  </div>
 </template>
 <script>
+import NavBar from "@/components/common/navbar/NavBar"; // 1-1 引入顶部导航组件
 export default {
 name: "ShopCart",
-  data () {
-    return {}
-  },
-  methods: {}
+  components: {
+    NavBar // 1-2 注册组件
+  }
 }
 </script>
 
