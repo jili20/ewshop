@@ -14,10 +14,10 @@
 
         <!--  12 添加外层 div 和 ref  -->
         <div ref="banref">
-          <!-- 2-1 轮播图占位 -->
-          <div class="banners">
-            <img src="@/assets/images/img.png" alt="">
-          </div>
+
+          <!-- ⚪️ 3-3 轮播图组件: 把数据传给子组件 :banners="banners" -->
+          <home-swiper :banners="banners"></home-swiper>
+
           <!-- 加入推荐组件;-->
           <!-- 6、给子组件传数据：以变量的方式 :recommend="recommend"   -->
           <recommend-view :recommends="recommends"/>
@@ -32,12 +32,13 @@
       </div>
     </div>
 
-    <!-- ⚪️ 2-3 回到顶部组件；接收子组件传递事件，定义自己的方法 -->
+    <!-- 2-3 回到顶部组件；接收子组件传递事件，定义自己的方法 -->
     <back-top @bTop="bTop" v-show="isShowBackTop"></back-top>
 
   </div>
 </template>
 <script>
+import HomeSwiper from "@/views/home/ChildComps/HomeSwiper"; // ⚪️ 3-1 轮播图组件
 import NavBar from "@/components/common/navbar/NavBar"; // 1-1 引入顶部导航组件
 import RecommendView from "@/views/home/ChildComps/RecommendView"; // 引入推荐组件
 import {getHomeAllData, getHomeGoods} from '@/network/home'; //️ 1、 调用 api方法 getHomeGoods
@@ -46,15 +47,15 @@ import TabControl from "@/components/content/tabControl/TabControl"; //  1 引�
 import GoodsList from "@/components/content/goods/GoodsList"; // 4
 import {ref, reactive, onMounted, computed, watchEffect, nextTick} from 'vue'; //  8 watchEffect 监听所有数据；nextTick 当 DOM渲染完执行的方法 ; 2、引入 reactive 引用代理对象，ref 数组，computed 计算属性、onMounted 生命周期
 import BScroll from 'better-scroll' //  4 引入上拉加载数据插件
-import BackTop from "@/components/common/backtop/BackTop"; // ⚪️ 2-1 加到顶部
+import BackTop from "@/components/common/backtop/BackTop"; // ️ 2-1 加到顶部
 export default {
   name: "Home",
 
   setup() {
     let isTabFixed = ref(false) // 默认不显示
-    let isShowBackTop = ref(false) // ⚪️ 2-4 回到顶部按钮
+    let isShowBackTop = ref(false) // ️ 2-4 回到顶部按钮
     let banref = ref(null) //  13
-
+    let banners = ref([]) // ⚪️ 3-4 轮播图
 
     // let temid = ref(0) // 4 声明临时变量
     // ref 空数组 引用
@@ -80,6 +81,8 @@ export default {
     onMounted(() => {
       getHomeAllData().then(res => {
         recommends.value = res.goods.data // 4、调用api方法，把获取到的数据赋值给定义的空数组
+        banners.value = res.slides // ⚪️ 3-6 获取轮播图数据
+        // console.log(res.slides)
       })
       // 5、按销量查询
       getHomeGoods('sales').then(res => {
@@ -105,7 +108,7 @@ export default {
       bscroll.on('scroll', (position) => {
         // console.log(banref.value.offsetHeight) // 15 offsetHeight 偏移量的高度
         // console.log(-position.y) // 打印滚动的距离
-        isShowBackTop.value = isTabFixed.value = (-position.y) > banref.value.offsetHeight // ⚪️ 2-6 isShowBackTop.value =
+        isShowBackTop.value = isTabFixed.value = (-position.y) > banref.value.offsetHeight // ️ 2-6 isShowBackTop.value =
       })
 
       //  10 上拉加载更多数据，触发 pullingUp
@@ -138,7 +141,7 @@ export default {
       })
     })
 
-    const bTop = () => { // ⚪️ 2-7 回到顶部方法
+    const bTop = () => { // ️ 2-7 回到顶部方法
       // console.log('1111111111')
       bscroll.scrollTo(0, 0, 500) // 前两个参数是位置，500 毫秒回到顶部
     }
@@ -151,8 +154,9 @@ export default {
       showGoods, // 7
       isTabFixed,
       banref, // 14
-      isShowBackTop, // ⚪️ 2-5 回到顶部
-      bTop // ⚪ 2-8
+      isShowBackTop, // ️ 2-5 回到顶部
+      bTop, //  2-8
+      banners // ⚪️ 3-5 轮播图数据
     }
   },
 
@@ -161,7 +165,9 @@ export default {
     RecommendView,
     TabControl, // 2、注册内容选项卡组件
     GoodsList, //  5
-    BackTop // ⚪️ 2-2 注册回到顶部组件
+    BackTop, // ️ 2-2 注册回到顶部组件
+    HomeSwiper // ⚪️ 3-2 注册轮播图组件
+
   }
 }
 </script>
@@ -178,12 +184,6 @@ export default {
     right: 0;
     overflow: hidden; // 超出部分隐藏
   }
-}
-
-// 2-2 轮播图
-.banners img {
-  width: 100%;
-  height: auto;
 }
 
 </style>
