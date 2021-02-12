@@ -1,7 +1,8 @@
 <template>
   <!-- 商品列表项 -->
   <div class="goods-item">
-    <img :src="product.cover_url" alt="">
+    <!-- <img :src="product.cover_url" alt="">-->
+    <img v-lazy="product.cover_url" alt="">
     <div class="goods-info">
       <p>{{ product.title }}</p>
       <span class="price"><small>￥</small>{{ product.price }}</span>

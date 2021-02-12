@@ -2,7 +2,8 @@
   <!-- 轮播图组件 -->
   <van-swipe v-if="banners.length" class="my-swipe" :autoplay="2000" indicator-color="white">
     <van-swipe-item v-for="(item,index) in banners" :key="index">
-      <img :src="item.img_url" alt="">
+      <!-- <img :src="item.img_url" alt="">-->
+      <img v-lazy="item.img_url" alt="">
     </van-swipe-item>
   </van-swipe>
 </template>
@@ -19,7 +20,7 @@ export default {
 </script>
 
 <style scoped>
-img{
+img {
   width: 100%;
   height: auto !important;
 }

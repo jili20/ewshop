@@ -7,7 +7,8 @@
       <!-- 去除 a 标签默认点击事件，使用自定义的 @click.prevent="goDetail" -->
       <!-- 🔴 1-2 跳转到商品说情页面 -->
       <a href="" @click.prevent="goDetail(item.id)">
-        <img :src="item.cover_url"/>
+        <!-- <img :src="item.cover_url"/> 下面使用懒加载 -->
+        <img v-lazy="item.cover_url"/>
         <div>{{ item.title }}</div>
       </a>
     </div>
