@@ -47,7 +47,7 @@ import TabControl from "@/components/content/tabControl/TabControl"; //  1 引�
 import GoodsList from "@/components/content/goods/GoodsList"; // 4
 import {ref, reactive, onMounted, computed, watchEffect, nextTick} from 'vue'; //  8 watchEffect 监听所有数据；nextTick 当 DOM渲染完执行的方法 ; 2、引入 reactive 引用代理对象，ref 数组，computed 计算属性、onMounted 生命周期
 import BScroll from 'better-scroll' //  4 引入上拉加载数据插件
-import BackTop from "@/components/common/backtop/BackTop"; // ️ 2-1 加到顶部
+import BackTop from "@/components/common/backtop/BackTop"; // ️ 2-1 回到顶部
 export default {
   name: "Home",
 
@@ -111,10 +111,10 @@ export default {
         isShowBackTop.value = isTabFixed.value = (-position.y) > banref.value.offsetHeight // ️ 2-6 isShowBackTop.value =
       })
 
-      //  10 上拉加载更多数据，触发 pullingUp
+      // 10 上拉加载更多数据，触发 pullingUp
       bscroll.on("pullingUp", () => {
         // console.log('上拉加载更多......')
-        // console.log('centerHeight：' + document.querySelector('.center').clientHeight)
+        // console.log('centerHeight：' + document.querySelector('.content').clientHeight)
         const page = goods[currentType.value].page + 1
         getHomeGoods(currentType.value, page).then(res => {
           goods[currentType.value].list.push(...res.goods.data)
@@ -167,7 +167,6 @@ export default {
     GoodsList, //  5
     BackTop, // ️ 2-2 注册回到顶部组件
     HomeSwiper // ⚪️ 3-2 注册轮播图组件
-
   }
 }
 </script>
