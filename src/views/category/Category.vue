@@ -38,8 +38,10 @@
         <div class="content">
           <!-- 3-1 商品卡片 -->
           <!--   暂时不 2-18 遍历计算属性值 showGoods  -->
+          <!-- 6-1 通过点击事件跳转到商品详情页面 @click="itemClick(item.id)" -->
           <van-card
               v-for="item in showGoods" :key="item.id"
+              @click="itemClick(item.id)"
               :num="item.comments_count"
               :tag="item.comments_count >= 0 ? '流行' : '标签'"
               :price="item.price"
@@ -58,6 +60,7 @@
 <script>
 import NavBar from "@/components/common/navbar/NavBar"; // 1-1 引入顶部导航组件
 import {ref, reactive, onMounted, computed, watchEffect, nextTick} from 'vue'; //  2-14 computed 计算属性
+import {useRouter} from 'vue-router'; // 6-2 导入路由器
 import {getCategory, getCategoryGoods} from "@/network/category"; //  2-18 引入 api 方法：getCategoryGoods
 import BScroll from 'better-scroll' //  4-1 引入上拉加载数据插件
 import BackTop from "@/components/common/backtop/BackTop"; // ️ 5-1 回到顶部
@@ -66,6 +69,7 @@ export default {
   name: "Category",
 
   setup() {
+    const router = useRouter() // 6-3 获取路由器
     let activeKey = ref(0)   // 二级分类默认选中项
     let activeName = ref(1)  // 1-2 手风琴效果 默认值 1
     let active = ref(1)  //  2-2 默认选中项值为 1
@@ -203,7 +207,11 @@ export default {
       getGoods, //  2-12 通过分类获取商品
       goods, //  2-15
       showGoods, //  2-17
-      bscroll // 4-3
+      bscroll, // 4-3
+      itemClick:(id)=>{
+        console.log(id)
+        router.push({path:'/detail',query:{id}}) //
+      }
     }
   },
   components: {

@@ -1,6 +1,7 @@
 <template>
   <!-- 商品列表项 -->
-  <div class="goods-item">
+  <!-- 1-1 点击路由跳转带 id ：@click="itemClick(product.id)" -->
+  <div class="goods-item" @click="itemClick">
     <!-- <img :src="product.cover_url" alt="">-->
     <img v-lazy="product.cover_url" alt="">
     <div class="goods-info">
@@ -11,12 +12,24 @@
   </div>
 </template>
 <script>
+import {useRouter} from 'vue-router';  // 1-2 引入路由器
+
 export default {
   name: "GoodsLisItem",
-  props: { // ⚪️ 1 接收父组件传值
+  props: { // 接收父组件传值
     product: Object,
     default() {
       return {}
+    }
+  },
+  setup(props) {
+    const router = useRouter() // 1-3 声明路由器
+
+    return {
+      itemClick: () => {
+        router.push({path:'/detail',query:{id:props.product.id}}) // 1-4 本页有 id，在这里传; 页面有缓存
+        // console.log(props.product.id)
+      }
     }
   }
 }
