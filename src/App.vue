@@ -1,13 +1,13 @@
 <template>
-  <!-- <router-view/>-->
+  <router-view/>
   <!-- 添加下面这一块，给所有请求加缓存 -->
-  <router-view v-slot="{Component}">
-    <transition>
-      <keep-alive>
-        <component :is="Component"/>
-      </keep-alive>
-    </transition>
-  </router-view>
+  <!--  <router-view v-slot="{Component}">-->
+  <!--    <transition>-->
+  <!--      <keep-alive>-->
+  <!--        <component :is="Component"/>-->
+  <!--      </keep-alive>-->
+  <!--    </transition>-->
+  <!--  </router-view>-->
 
   <!-- 底部导航-->
   <div id="nav">

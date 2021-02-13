@@ -37,3 +37,9 @@ a {
 .right {
     float: right;
 }
+
+/*由于商品详情页面图片样式不起效，这里写到全局来*/
+img {
+    max-width: 100% !important;
+    height: auto !important;
+}
