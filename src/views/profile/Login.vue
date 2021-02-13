@@ -48,6 +48,7 @@ import {ref, reactive, toRefs} from 'vue';
 import {login} from '@/network/user';
 import {Notify, Toast} from 'vant';
 import {useRouter} from 'vue-router';
+import {useStore} from 'vuex'; // ⚪️ 2-1 引入状态管理
 
 export default {
   name: "Login",
@@ -56,6 +57,7 @@ export default {
   },
   setup() {
     const router = useRouter()
+    const store = useStore()  // ⚪️ 2-2 声明状态管理
 
     const userinfo = reactive({
       email: '',
@@ -63,23 +65,25 @@ export default {
     })
 
     const onSubmit = () => {
-         // 账户： eduha@qq.com    密码：aaaaaa
-        login(userinfo).then(res=>{
-          // console.log(res.access_token)
-          // 将 token 保存在本地，localStorage 用于长久保存整个网站的数据，保存的数据没有过期时间，直到手动去删除。
-          // window.localStorage.setItem(key,value) \  window.localStorage.getItem(key)
-          window.localStorage.setItem('token',res.access_token)
+      // 账户： eduha@qq.com    密码：aaaaaa
+      login(userinfo).then(res => {
+        // console.log(res.access_token)
+        // 将 token 保存在本地，localStorage 用于长久保存整个网站的数据，保存的数据没有过期时间，直到手动去删除。
+        // window.localStorage.setItem(key,value) \  window.localStorage.getItem(key)
+        window.localStorage.setItem('token', res.access_token)
+        // ⚪️ 2-3 设置状态
+        store.commit('setIsLogin',true)
 
-          // 在 vuex  isLogin
-          Toast.success('登录成功！')
+        // 在 vuex  isLogin
+        Toast.success('登录成功！')
 
-          userinfo.email=''
-          userinfo.password=''
+        userinfo.email = ''
+        userinfo.password = ''
 
-          setTimeout(()=>{
-            router.go(-1) // 从哪来回哪儿去
-          },500)
-        })
+        setTimeout(() => {
+          router.go(-1) // 从哪来回哪儿去
+        }, 500)
+      })
     }
 
     return {
@@ -91,7 +95,7 @@ export default {
 </script>
 
 <style scoped>
-.link-login{
+.link-login {
   font-size: 14px;
   margin-bottom: 20px;
   color: #42b983;

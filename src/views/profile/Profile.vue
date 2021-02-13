@@ -14,6 +14,7 @@ import NavBar from "@/components/common/navbar/NavBar"; // 1-1 引入顶部导�
 import {logout} from "@/network/user";
 import {Toast} from 'vant';
 import {useRouter} from 'vue-router';
+import {useStore} from 'vuex'; // ⚪️ 1 引入状态管理
 
 export default {
   name: "Profile",
@@ -22,6 +23,7 @@ export default {
   },
   setup() {
     const router = useRouter()
+    const store = useStore() // ⚪️ 2 引入状态管理
 
     const tologout = () => {
       logout().then(res => {
@@ -29,6 +31,8 @@ export default {
           Toast.success('退出成功！')
           // 清除 token window.localStorage
           window.localStorage.setItem('token', '')
+          // ⚪️ 3 设置状态
+          store.commit('setIsLogin',false)
           // 500毫秒 退出到 登录页面
           setImmediate(()=>{
             router.push({path:'/login'})
