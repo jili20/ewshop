@@ -2,7 +2,7 @@
   <!-- 用户注册 -->
   <div>
     <nav-bar>
-      <template v-slot:default>新用户注册</template>
+      <template v-slot:default>注册</template>
     </nav-bar>
 
     <div style="margin-top: 50px;">
@@ -49,6 +49,10 @@
       />
 
       <div style="margin: 16px;">
+        <!-- // ⚪️ 1-3 路由直接跳转  @click="$router.push({path:'/login'})" -->
+        <div class="link-login" @click="$router.push({path:'/login'})">
+          已有账号，立即登录
+        </div>
         <van-button round block type="info" color="#44b883" native-type="submit">提交</van-button>
       </div>
     </van-form>
@@ -60,7 +64,7 @@ import NavBar from "@/components/common/navbar/NavBar"; // 1-1 引入顶部导�
 import {ref, reactive, toRefs} from 'vue';
 import {register} from '@/network/user';
 import {Notify, Toast} from 'vant';
-import {useRouter} from 'vue-router';
+import {useRouter} from 'vue-router'; // ⚪️ 1-1 路由直接跳转
 
 export default {
   name: "Register",
@@ -68,7 +72,7 @@ export default {
     NavBar
   },
   setup() {
-    const router = useRouter()
+    const router = useRouter()  // ⚪️ 1-2 路由直接跳转
 
     const userinfo = reactive({
       name: '',
@@ -110,5 +114,11 @@ export default {
 </script>
 
 <style scoped>
+.link-login{
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: #42b983;
+  float: right;
+}
 
 </style>

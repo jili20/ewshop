@@ -1,18 +1,25 @@
 // 封装通用网络请求
 // 安装axios $ npm i axios -s
 import axios from "axios";
-import {Notify} from 'vant';  // ⚪️ 1-1 消息提示组件
+import {Notify,Toast} from 'vant';  // ⚪️ 1-1 消息提示组件
+import router from "@/router";
 
 export function request(config) {
     const instance = axios.create({
         baseURL: 'https://api.shop.eduwork.cn/', // 根路径，网关统一入口路径
         timeout: 5000 // 请求超时时间，请求达到5秒，不让请求
     })
+
     // 请求拦截
     instance.interceptors.request.use(config => {
         // 如果有一个接口需要认证才可以访问，就在这里统一设置
-
-        // 直接放行
+        // 使用 JWT 认证: 取出用户登录时存的 token 放到请求头
+        const token = window.localStorage.getItem('token')
+        if (token) {
+            // Authorization: Bearer Token ; key : value
+            config.headers.Authorization = 'Bearer ' + token  // Bearer 右边有一个空格
+        }
+        // 放行
         return config;
     }, error => {
         // 什么也不要做
@@ -24,10 +31,13 @@ export function request(config) {
         return res.data ? res.data : res; // 封装获取数据 data 路径
     }, err => {
         // 如果有需要授权才可以访问的接口，统一去 login 授权
-
-        // 如果有错误，这里会处理,显示错误信息
+        if (err.response.status === 401) {
+            Toast.fail('请您先登录！')
+            router.push({path:'/login'})
+        }
+        // 如果后端接口有错误提示消息，这里统一处理,显示错误信息
         // console.log(err)
-        Notify(err.response.data.errors[Object.keys(err.response.data.errors)[0]][0])
+        Notify(err.response.data.errors[Object.keys(err.response.data.errors)[0]][0]);
     })
 
     return instance(config)
