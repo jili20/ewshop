@@ -254,11 +254,6 @@ export default {
     height: 100vh;
     padding: 10px;
     text-align: left !important;
-
-    //.content {
-    //  background: red;
-    //  padding-top: 100px;
-    //}
   }
 
   .van-card__thumb {

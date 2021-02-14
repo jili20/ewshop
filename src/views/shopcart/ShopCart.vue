@@ -1,14 +1,14 @@
 <template>
   <div>
-    <nav-bar>
+    <nav-bar class="nav-bar">
       <template v-slot:default>购物车(<span style="color: red">{{ $store.state.cartCount }}</span>)</template>
     </nav-bar>
     <div class="cart-box">
       <div class="cart-body">
-        <van-checkbox-group ref="checkboxGroup">
+        <van-checkbox-group ref="checkboxGroup" v-model="result" @change="groupChange">
           <van-swipe-cell :right-width="50" v-for="(item,index) in list" :key="index">
             <div class="good-item">
-              <van-checkbox name=""/>
+              <van-checkbox :name="item.id"/>
               <div class="good-img"><img src="@/assets/images/11.png"/></div>
               <div class="good-desc">
                 <div class="good-title">
@@ -63,7 +63,8 @@ export default {
 
     // 数据模型，状态
     const state = reactive({
-      list: []
+      list: [],
+      result: [] // id 数组
     })
 
     // 初始化购物车数据
@@ -72,6 +73,9 @@ export default {
       getCart('include=goods').then(res => {
         state.list = res.data
         // console.log(res.data)
+        // 选中的购物车列表，只留下 id 数组
+        state.result = res.data.filter(n => n.is_checked === 1).map(item => item.id)
+        // console.log(state.result)
         Toast.clear()
       })
     }
@@ -95,6 +99,13 @@ export default {
       // console.log(value)
       // console.log(detail.name)
     }
+    // 复选框改变处理方法
+    const groupChange = (result) => {
+      console.log(result)
+      state.result = result // 选中的 id 数组
+      // 改变数据表中选中状态
+      checkedCart({cart_ids: result})
+    }
 
     // 前往购物
     const goTo = () => {
@@ -104,7 +115,8 @@ export default {
     return {
       ...toRefs(state), // 解构
       goTo,
-      onChange
+      onChange,
+      groupChange
     }
   },
   components: {
@@ -114,6 +126,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .cart-box {
   .cart-body {
     margin: 60px 0 100px 0;
@@ -123,80 +136,90 @@ export default {
       display: flex;
 
       .good-img {
-        width: 100px;
-        height: auto;
+        img {
+          width: 100px;
+          height: auto;
+        }
+      }
+
+      .good-desc {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex: 1;
+        padding: 20px;
+
+        .good-title {
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .good-btn {
+          display: flex;
+          justify-content: space-between;
+
+          .price {
+            font-size: 16px;
+            color: red;
+            line-height: 28px;
+          }
+
+          .van-icon-delete {
+            font-size: 20px;
+            margin-top: 4px;
+          }
+        }
       }
     }
 
-    .good-desc {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      flex: 1;
-      padding: 20px;
-
-      .good-title {
-        display: flex;
-        justify-content: space-between;
-      }
-
-      .good-btn {
-        display: flex;
-        justify-content: space-between;
-
-        .price {
-          font-size: 16px;
-          color: red;
-          line-height: 28px;
-        }
-
-        .van-icon-delete {
-          font-size: 20px;
-          margin-top: 4px;
-        }
-      }
+    .delete-button {
+      width: 50px;
+      height: 100%;
     }
   }
 
-  .delete-button {
-    width: 50px;
-    height: 100%;
+  .empty {
+    width: 50%;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 200px;
+
+    .empty-cart {
+      width: 150px;
+      margin-bottom: 20px;
+    }
+
+    .van-icon-smile-o {
+      font-size: 50px;
+    }
+
+    .title {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
   }
-}
 
-.empty {
-  width: 50%;
-  margin: 200px auto 0;
-  text-align: center;
+  .submit-all {
+    margin-bottom: 50px;
 
-  .empty-cart {
-    width: 150px;
-    margin-bottom: 20px;
+    .van-checkbox {
+      margin-left: 0;
+    }
+
+    .van-submit-bar__text {
+      margin-right: 10px;
+    }
+
+    .van-submit-bar__button {
+      background: red;
+    }
   }
 
-  .van-icon-smile-o {
-    font-size: 50px;
+  .van-checkbox__icon--checked .van-icon {
+    background-color: red;
+    border-color: red;
   }
 
-  .title {
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-}
 
-.submit-all {
-  margin-bottom: 50px;
-}
-
-.van-checkbox {
-  margin-left: 0px;
-}
-
-.van-submit-bar__text {
-  margin-right: 10px;
-}
-
-.van-submit-bar__button {
-  background: red;
 }
 </style>

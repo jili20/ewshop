@@ -33,7 +33,5 @@ export default {
   flex-wrap: wrap; // 自动换行
   justify-content: space-around; // 环绕
   padding: 5px;
-
 }
-
 </style>

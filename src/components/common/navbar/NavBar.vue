@@ -56,6 +56,4 @@ export default {
     flex: 1; // 除掉左右，占全部
   }
 }
-
-
 </style>
