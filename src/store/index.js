@@ -8,7 +8,8 @@ const state = {
     user: {
         // isLogin: false
         isLogin: window.localStorage.getItem('token') ? true : false
-    }
+    },
+    cartCount: 0 // 购物车数量
 }
 
 export default createStore({

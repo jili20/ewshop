@@ -21,7 +21,8 @@
     </router-link>
     <router-link class="tab-bar-item" to="/shopcart">
       <div class="icon">
-        <van-badge :content="0" max="9">
+        <van-badge :content="$store.state.cartCount" max="9">
+          <!-- <van-badge :content="0" max="9">-->
           <i class="iconfont icon-gouwuche"></i>
         </van-badge>
       </div>
@@ -33,6 +34,20 @@
     </router-link>
   </div>
 </template>
+
+<script>
+import {onMounted} from 'vue';
+import {useStore} from 'vuex'; // ⚪️ 引入状态管理
+export default {
+  setup() {
+    const store = useStore()
+    onMounted(()=>{
+      store.dispatch('updateCart') // ⚪️ 分发，状态管理，更新购物车数量 cartCount
+    })
+
+  }
+}
+</script>
 
 <style lang="scss"> // scoped 局部使用
 @import "assets/css/base.css";

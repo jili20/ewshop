@@ -24,8 +24,9 @@
         <van-tag plain type="danger">{{ detail.is_recommend = 1 ? '推荐' : '' }}</van-tag>
       </template>
       <template #footer>
-        <van-button type="warning">加入购物车</van-button>
-        <van-button type="danger">立即购买</van-button>
+        <!--  3-1 @click="handleAddCart"  @click="goToCart" -->
+        <van-button type="warning" @click="handleAddCart">加入购物车</van-button>
+        <van-button type="danger" @click="goToCart">立即购买</van-button>
       </template>
     </van-card>
 
@@ -36,10 +37,10 @@
       </van-tab>
       <van-tab title="热评">
         <div v-for="item in detail.comments">
-          <div>{{ item.reply}}</div>
-          <div>{{ item.content}}</div>
-          <div>{{ item.pics_url}}</div>
-          <div>{{ item.created_at}}</div>
+          <div>{{ item.reply }}</div>
+          <div>{{ item.content }}</div>
+          <div>{{ item.pics_url }}</div>
+          <div>{{ item.created_at }}</div>
         </div>
       </van-tab>
       <van-tab title="相关图书">
@@ -51,10 +52,13 @@
 </template>
 <script>
 import NavBar from "@/components/common/navbar/NavBar"; // 1-1 引入顶部导航组件
-import {useRoute} from 'vue-router'; // 注意：这里导入路由，不是路由器
-import {ref, onMounted, reactive, toRefs} from 'vue'; // ⚪️ 2-1 onMounted , reactive,toRefs
-import {getDetail} from "@/network/detail"; // ⚪️ 2-2
+import {useRoute,useRouter} from 'vue-router'; // 注意：这里导入路由，不是路由器
+import {useStore} from 'vuex'; // ⚪️ 1 引入状态管理
+import {ref, onMounted, reactive, toRefs} from 'vue'; //  2-1 onMounted , reactive,toRefs
+import {getDetail} from "@/network/detail"; //  2-2
 import GoodsList from "@/components/content/goods/GoodsList";
+import {addCart} from "@/network/cart";
+import {Toast} from 'vant';
 
 export default {
   name: "Detail",
@@ -65,13 +69,16 @@ export default {
   setup() {
     let active = ref(1) // 标签页 默认激活第 1个
     const route = useRoute()
+    const router = useRouter()
+    const store = useStore()  // ⚪️ 2
+
     let id = ref(0)
-    let book = reactive({  // ⚪️ 2-3 定义空对象封装数据
+    let book = reactive({  //️ 2-3 定义空对象封装数据
       detail: {},
       like_goods: []
     })
 
-    onMounted(() => { // ⚪️ 2-4
+    onMounted(() => { //  2-4
       id.value = route.query.id
 
       getDetail(id.value).then(res => {
@@ -81,10 +88,38 @@ export default {
       })
     })
 
+    //  3-2 添加购物车
+    const handleAddCart = () => {
+      // console.log('加入购物车')
+      addCart({goods_id: book.detail.id, num: 1}).then(res => {
+        // console.log(res.status) // 添加 1次，状态码 201 ； 添加第 2 次，状态码 204
+        if (res.status === 201 || res.status === 204) {
+          Toast.success('添加成功！')
+          store.dispatch('updateCart') // ⚪️ 3 分发，状态管理，设置购物车数量 cartCount
+        }
+        // console.log(res.status)
+      })
+
+    }
+
+    //  3-3 立即购买
+    const goToCart = () => {
+      // console.log('立即购买')
+      addCart({goods_id: book.detail.id, num: 1}).then(res => {
+        if (res.status === 201 || res.status === 204) {
+          Toast.success('添加成功,显示购物车')
+          store.dispatch('updateCart') // ⚪️ 3 分发，状态管理，设置购物车数量 cartCount
+          router.push({path:'/shopcart'})
+        }
+      })
+    }
+
     return {
       id,
-      ...toRefs(book), // ⚪️ 2-5 解构对象
-      active
+      ...toRefs(book), //  2-5 解构对象
+      active,
+      handleAddCart, //  3-4
+      goToCart //  3-4
     }
   }
 }
